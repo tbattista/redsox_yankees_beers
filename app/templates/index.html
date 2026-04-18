@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "_macros.html" import team_chip, game_line %}
+{% block content %}
+
+<section class="hero">
+  <h2>{{ season }} season</h2>
+  <p class="sub">Winner of each series wins a six-pack.</p>
+</section>
+
+<section class="tally-grid">
+  <div class="tally-card sox">
+    <div class="label">Red Sox</div>
+    <div class="count">{{ tally.red_sox_series }}</div>
+    <div class="sub">series won</div>
+  </div>
+  <div class="tally-card yanks">
+    <div class="label">Yankees</div>
+    <div class="count">{{ tally.yankees_series }}</div>
+    <div class="sub">series won</div>
+  </div>
+  <div class="tally-card neutral">
+    <div class="label">Splits</div>
+    <div class="count">{{ tally.splits }}</div>
+    <div class="sub">no beer owed</div>
+  </div>
+  <div class="tally-card neutral">
+    <div class="label">Remaining</div>
+    <div class="count">{{ tally.pending }}</div>
+    <div class="sub">series to play</div>
+  </div>
+</section>
+
+<section class="beer-summary">
+  {% if tally.beer_balance > 0 %}
+    <p><strong>Yankees fan owes {{ tally.beer_balance }} six-pack{{ 's' if tally.beer_balance != 1 else '' }}</strong> to Red Sox fan.</p>
+  {% elif tally.beer_balance < 0 %}
+    <p><strong>Red Sox fan owes {{ -tally.beer_balance }} six-pack{{ 's' if -tally.beer_balance != 1 else '' }}</strong> to Yankees fan.</p>
+  {% else %}
+    <p>All square on beer.</p>
+  {% endif %}
+</section>
+
+{% if next_series %}
+<section class="panel">
+  <h3>Next series</h3>
+  <div class="series-head">
+    <div>{{ next_series.start_date.strftime('%b %-d') }} – {{ next_series.end_date.strftime('%b %-d') }}</div>
+    <div class="venue">{{ next_series.venue }}</div>
+  </div>
+  {% for g in next_series.games %}
+    {{ game_line(g, RED_SOX_ID, TEAM_NAMES) }}
+  {% endfor %}
+</section>
+{% endif %}
+
+<section class="panel">
+  <h3>All series</h3>
+  {% if series_list %}
+  <table class="series-table">
+    <thead>
+      <tr><th>#</th><th>Dates</th><th>Venue</th><th>Record</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+    {% for s in series_list %}
+      <tr>
+        <td>{{ s.index }}</td>
+        <td>{{ s.start_date.strftime('%b %-d') }}{% if s.end_date != s.start_date %}–{{ s.end_date.strftime('%b %-d') }}{% endif %}</td>
+        <td>{{ s.venue }}</td>
+        <td>
+          <span class="chip sox">{{ s.wins_for(RED_SOX_ID) }}</span>
+          –
+          <span class="chip yanks">{{ s.wins_for(YANKEES_ID) }}</span>
+        </td>
+        <td>
+          {% if s.winner_id == RED_SOX_ID %}<span class="result sox">Red Sox</span>
+          {% elif s.winner_id == YANKEES_ID %}<span class="result yanks">Yankees</span>
+          {% elif s.is_tied_final %}<span class="result">Split</span>
+          {% else %}<span class="result pending">{{ s.status_label }}</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No Red Sox–Yankees games found for {{ season }} yet.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

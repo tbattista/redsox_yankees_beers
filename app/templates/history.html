@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <h2>Historical beer ledger</h2>
+  <p class="sub">What the bet would've paid out in past seasons.</p>
+</section>
+
+<section class="panel">
+  <table class="series-table">
+    <thead>
+      <tr>
+        <th>Season</th>
+        <th>Red Sox</th>
+        <th>Yankees</th>
+        <th>Splits</th>
+        <th>Series</th>
+        <th>Beer balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td><a href="/schedule?season={{ row.season }}">{{ row.season }}</a></td>
+        <td><span class="chip sox">{{ row.tally.red_sox_series }}</span></td>
+        <td><span class="chip yanks">{{ row.tally.yankees_series }}</span></td>
+        <td>{{ row.tally.splits }}</td>
+        <td>{{ row.series_count }} · {{ row.games_count }} games</td>
+        <td>
+          {% if row.tally.beer_balance > 0 %}
+            Yankees → Sox: {{ row.tally.beer_balance }}
+          {% elif row.tally.beer_balance < 0 %}
+            Sox → Yankees: {{ -row.tally.beer_balance }}
+          {% else %}
+            Even
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}

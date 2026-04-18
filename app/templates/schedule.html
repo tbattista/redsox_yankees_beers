@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_macros.html" import team_chip, game_line %}
+{% block content %}
+
+<section class="hero">
+  <h2>{{ season }} schedule</h2>
+  <form method="get" action="/schedule" class="season-picker">
+    <label>Season
+      <select name="season" onchange="this.form.submit()">
+        {% for y in available_seasons %}
+          <option value="{{ y }}" {% if y == season %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </form>
+</section>
+
+{% if series_list %}
+  {% for s in series_list %}
+    <section class="panel">
+      <div class="series-head">
+        <div>
+          <strong>Series {{ s.index }}</strong>
+          · {{ s.start_date.strftime('%a %b %-d') }} – {{ s.end_date.strftime('%a %b %-d') }}
+          · {{ s.venue }}
+        </div>
+        <div class="series-result">
+          {% if s.winner_id == RED_SOX_ID %}<span class="result sox">Red Sox win {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }}</span>
+          {% elif s.winner_id == YANKEES_ID %}<span class="result yanks">Yankees win {{ s.wins_for(YANKEES_ID) }}–{{ s.wins_for(RED_SOX_ID) }}</span>
+          {% elif s.is_tied_final %}<span class="result">Split {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }}</span>
+          {% else %}<span class="result pending">{{ s.status_label }}</span>
+          {% endif %}
+        </div>
+      </div>
+      {% for g in s.games %}
+        {{ game_line(g, RED_SOX_ID, TEAM_NAMES) }}
+      {% endfor %}
+    </section>
+  {% endfor %}
+{% else %}
+  <p class="empty">No Red Sox–Yankees games found for {{ season }}.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <h2>{{ season }} calendar</h2>
+  <form method="get" action="/calendar" class="season-picker">
+    <label>Season
+      <select name="season" onchange="this.form.submit()">
+        {% for y in available_seasons %}
+          <option value="{{ y }}" {% if y == season %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </form>
+</section>
+
+{% if months %}
+  {% for m in months %}
+    <section class="panel">
+      <h3>{{ m.name }} {{ m.year }}</h3>
+      <table class="calendar">
+        <thead>
+          <tr>
+            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for week in m.weeks %}
+          <tr>
+            {% for d in week %}
+              {% set games = games_by_date.get(d, []) %}
+              <td class="{% if d.month != m.month %}dim{% endif %} {% if d == today %}today{% endif %}">
+                <div class="daynum">{{ d.day }}</div>
+                {% for g in games %}
+                  {% set host_sox = g.home_id == RED_SOX_ID %}
+                  <div class="cal-game {% if host_sox %}sox{% else %}yanks{% endif %}">
+                    @ {{ 'BOS' if host_sox else 'NYY' }}
+                    {% if g.is_final %}
+                      · {{ g.away_score }}–{{ g.home_score }}
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endfor %}
+{% else %}
+  <p class="empty">No games scheduled for {{ season }}.</p>
+{% endif %}
+
+{% endblock %}

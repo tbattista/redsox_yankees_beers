@@ -1,0 +1,128 @@
+:root {
+  --sox: #bd3039;
+  --sox-dark: #8a1f27;
+  --yanks: #0c2340;
+  --yanks-accent: #c4ced4;
+  --bg: #0f1115;
+  --surface: #181b22;
+  --surface-2: #20242e;
+  --ink: #e9ecf2;
+  --muted: #9aa3b2;
+  --line: #2a2f3a;
+  --ok: #3ecf8e;
+  --warn: #e3b341;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+a { color: var(--ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(189,48,57,0.15), rgba(12,35,64,0.3));
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand h1 { font-size: 18px; margin: 0 0 0 6px; letter-spacing: 0.5px; }
+.brand .vs { color: var(--muted); font-size: 13px; }
+.dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+.dot.sox { background: var(--sox); }
+.dot.yanks { background: var(--yanks); border: 1px solid var(--yanks-accent); }
+nav a { margin-left: 16px; color: var(--muted); }
+nav a:hover { color: var(--ink); }
+
+main { max-width: 1080px; margin: 0 auto; padding: 24px; }
+.hero { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+.hero h2 { margin: 0; font-size: 26px; }
+.hero .sub { color: var(--muted); margin: 4px 0 0; }
+
+.tally-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;
+}
+.tally-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px; text-align: center;
+}
+.tally-card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.tally-card .count { font-size: 42px; font-weight: 700; margin: 6px 0 4px; }
+.tally-card .sub { font-size: 12px; color: var(--muted); }
+.tally-card.sox { border-top: 3px solid var(--sox); }
+.tally-card.yanks { border-top: 3px solid var(--yanks-accent); }
+
+.beer-summary {
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 16px; margin-bottom: 20px;
+}
+.beer-summary p { margin: 0; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px; margin-bottom: 16px;
+}
+.panel h3 { margin: 0 0 12px; font-size: 16px; }
+.series-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; color: var(--muted); font-size: 14px; }
+.series-head .venue { font-style: italic; }
+
+.game {
+  display: grid; grid-template-columns: 120px 1fr 1fr;
+  gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); align-items: center;
+}
+.game:first-child { border-top: none; }
+.game .date { color: var(--muted); font-variant-numeric: tabular-nums; }
+.game .at { color: var(--muted); margin: 0 4px; }
+.game .winner { margin-left: 8px; color: var(--ok); font-size: 12px; }
+.game .live { color: var(--warn); }
+.game .pending { color: var(--muted); }
+
+.chip {
+  display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
+}
+.chip.sox { background: var(--sox); color: white; }
+.chip.yanks { background: var(--yanks); color: var(--yanks-accent); border: 1px solid var(--yanks-accent); }
+
+.result { font-weight: 600; }
+.result.sox { color: var(--sox); }
+.result.yanks { color: var(--yanks-accent); }
+.result.pending { color: var(--muted); font-weight: 400; }
+
+.series-table { width: 100%; border-collapse: collapse; }
+.series-table th, .series-table td {
+  text-align: left; padding: 8px; border-bottom: 1px solid var(--line);
+}
+.series-table th { font-size: 12px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+
+.season-picker select {
+  background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); padding: 6px 10px; border-radius: 6px;
+}
+
+.calendar { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.calendar th {
+  text-align: center; padding: 6px; font-size: 12px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.calendar td {
+  border: 1px solid var(--line); vertical-align: top; height: 88px; padding: 4px;
+  background: var(--surface-2);
+}
+.calendar td.dim { background: transparent; color: var(--muted); }
+.calendar td.today { outline: 2px solid var(--ok); }
+.calendar .daynum { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.cal-game {
+  font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-bottom: 2px;
+  background: var(--surface); border-left: 3px solid var(--line);
+}
+.cal-game.sox { border-left-color: var(--sox); }
+.cal-game.yanks { border-left-color: var(--yanks-accent); }
+
+footer {
+  text-align: center; padding: 24px; color: var(--muted); font-size: 12px;
+}
+.empty { color: var(--muted); text-align: center; padding: 40px; }
+
+@media (max-width: 700px) {
+  .tally-grid { grid-template-columns: repeat(2, 1fr); }
+  .game { grid-template-columns: 1fr; gap: 2px; }
+  .topbar { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .calendar td { height: 72px; }
+}

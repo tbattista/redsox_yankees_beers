@@ -1,0 +1,26 @@
+{% macro team_chip(team_id, TEAM_NAMES, RED_SOX_ID) %}
+<span class="chip {% if team_id == RED_SOX_ID %}sox{% else %}yanks{% endif %}">{{ TEAM_NAMES[team_id] }}</span>
+{% endmacro %}
+
+{% macro game_line(g, RED_SOX_ID, TEAM_NAMES) %}
+<div class="game">
+  <span class="date">{{ g.game_date.strftime('%a %b %-d') }}</span>
+  <span class="matchup">
+    {{ team_chip(g.away_id, TEAM_NAMES, RED_SOX_ID) }}
+    <span class="at">@</span>
+    {{ team_chip(g.home_id, TEAM_NAMES, RED_SOX_ID) }}
+  </span>
+  <span class="score">
+    {% if g.is_final %}
+      {{ g.away_score }} – {{ g.home_score }}
+      {% if g.winner_id %}
+        <span class="winner">W: {{ TEAM_NAMES[g.winner_id] }}</span>
+      {% endif %}
+    {% elif g.status == 'Live' %}
+      <span class="live">Live · {{ g.detailed_status }}</span>
+    {% else %}
+      <span class="pending">{{ g.game_date.strftime('%-I:%M %p ET') }}</span>
+    {% endif %}
+  </span>
+</div>
+{% endmacro %}

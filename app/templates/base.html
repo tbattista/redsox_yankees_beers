@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{% block title %}Red Sox vs Yankees — Beer Tracker{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="dot sox"></span>
+    <span class="vs">vs</span>
+    <span class="dot yanks"></span>
+    <h1>Beer Series Tracker</h1>
+  </div>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/schedule">Schedule</a>
+    <a href="/calendar">Calendar</a>
+    <a href="/history">History</a>
+  </nav>
+</header>
+<main>
+  {% block content %}{% endblock %}
+</main>
+<footer>
+  <span>Data: MLB Stats API · cached 10 min</span>
+</footer>
+</body>
+</html>
