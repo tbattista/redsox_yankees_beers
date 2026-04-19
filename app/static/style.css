@@ -91,6 +91,14 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px; }
   text-align: left; padding: 8px; border-bottom: 1px solid var(--line);
 }
 .series-table th { font-size: 12px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+.series-table .num { text-align: center; }
+.series-table .nowrap { white-space: nowrap; }
+.series-table .muted { color: var(--muted); }
+
+.history-table th, .history-table td { padding: 6px 8px; }
+.history-table td { font-variant-numeric: tabular-nums; }
+
+.chip.tight { padding: 1px 7px; min-width: 18px; text-align: center; }
 
 .season-picker select {
   background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); padding: 6px 10px; border-radius: 6px;
@@ -148,4 +156,8 @@ footer {
   .game { grid-template-columns: 1fr; gap: 2px; }
   .topbar { flex-direction: column; gap: 8px; align-items: flex-start; }
   .calendar td { height: 72px; }
+  main { padding: 16px 12px; }
+  .history-table { font-size: 13px; }
+  .history-table th, .history-table td { padding: 6px 4px; }
+  .history-table th { font-size: 10px; letter-spacing: 0.3px; }
 }
