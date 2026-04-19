@@ -1,3 +1,17 @@
+{% macro paid_toggle(s, season, paid_map, redirect_to) %}
+  {% if s.winner_id %}
+    {% set info = paid_map.get(s.anchor_game_pk) %}
+    {% set is_paid = info.paid if info else False %}
+    <form method="post" action="/series/{{ season }}/{{ s.anchor_game_pk }}/paid" class="paid-form">
+      <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
+      <label class="paid-check {% if is_paid %}on{% endif %}">
+        <input type="checkbox" name="paid" {% if is_paid %}checked{% endif %} onchange="this.form.submit()">
+        <span>{% if is_paid %}Paid{% else %}Unpaid{% endif %}</span>
+      </label>
+    </form>
+  {% endif %}
+{% endmacro %}
+
 {% macro team_chip(team_id, TEAM_NAMES, RED_SOX_ID) %}
 <span class="chip {% if team_id == RED_SOX_ID %}sox{% else %}yanks{% endif %}">{{ TEAM_NAMES[team_id] }}</span>
 {% endmacro %}

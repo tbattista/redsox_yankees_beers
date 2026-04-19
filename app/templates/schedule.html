@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import team_chip, game_line %}
+{% from "_macros.html" import team_chip, game_line, paid_toggle %}
 {% block content %}
 
 <section class="hero">
@@ -30,6 +30,7 @@
           {% elif s.is_tied_final %}<span class="result">Split {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }}</span>
           {% else %}<span class="result pending">{{ s.status_label }}</span>
           {% endif %}
+          {{ paid_toggle(s, season, paid_map, "/schedule?season=" ~ season) }}
         </div>
       </div>
       {% for g in s.games %}

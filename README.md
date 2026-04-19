@@ -10,6 +10,7 @@ Tiny FastAPI site that tracks Red Sox / Yankees head-to-head series so two frien
 - Tallies series wins, splits, and a net beer balance.
 - Renders three views: **Dashboard** (tally + next series), **Schedule** (list by series), **Calendar** (month grid).
 - **History** page replays the same logic across past seasons so you can see what the bet would've paid out.
+- Every settled series has a **Paid / Unpaid** toggle so you can track whether the six-pack has actually been handed over. State is stored in a local SQLite file (`$DATA_DIR/app.db`, default `./data/app.db`).
 
 ## Running locally
 
@@ -27,7 +28,7 @@ Then open http://127.0.0.1:8000/.
 2. Create a new Railway project from the repo.
 3. Railway auto-detects Python via `nixpacks` and uses the start command in `railway.json` / `Procfile`:
    `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-4. No env vars or database required.
+4. Add a Railway **Volume** mounted at `/data` and set the env var `DATA_DIR=/data` so the paid-toggle SQLite DB survives redeploys. Without a volume the DB resets on every deploy.
 
 ## Notes
 

@@ -115,6 +115,29 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px; }
 .cal-game.sox { border-left-color: var(--sox); }
 .cal-game.yanks { border-left-color: var(--yanks-accent); }
 
+.paid-form { display: inline-block; margin: 0; }
+.paid-form input[type="checkbox"] { display: none; }
+.paid-check {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--line);
+  color: var(--muted); font-size: 12px; font-weight: 600;
+  user-select: none;
+}
+.paid-check::before {
+  content: ""; width: 12px; height: 12px; border-radius: 3px;
+  border: 1.5px solid var(--muted); display: inline-block;
+  background: transparent;
+}
+.paid-check.on { color: var(--ok); border-color: var(--ok); }
+.paid-check.on::before {
+  background: var(--ok); border-color: var(--ok);
+  box-shadow: inset 0 0 0 2px var(--surface);
+}
+.paid-check:hover { border-color: var(--ink); }
+
+.series-result { display: flex; align-items: center; gap: 12px; }
+
 footer {
   text-align: center; padding: 24px; color: var(--muted); font-size: 12px;
 }

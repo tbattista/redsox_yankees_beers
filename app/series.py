@@ -13,6 +13,11 @@ class Series:
     games: list[Game] = field(default_factory=list)
 
     @property
+    def anchor_game_pk(self) -> int:
+        """Stable identifier for this series — the first game's MLB gamePk."""
+        return self.games[0].game_pk
+
+    @property
     def start_date(self) -> date:
         return self.games[0].date_only
 

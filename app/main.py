@@ -5,11 +5,12 @@ import time
 from datetime import date, datetime
 from pathlib import Path
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from . import db
 from .mlb import RED_SOX_ID, YANKEES_ID, TEAM_NAMES, Game, fetch_matchup
 from .series import Series, Tally, group_into_series, tally_series
 
@@ -18,6 +19,11 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 app = FastAPI(title="Red Sox vs Yankees — Beer Series Tracker")
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+
+
+@app.on_event("startup")
+def _startup() -> None:
+    db.init_db()
 
 CURRENT_SEASON = 2026
 
@@ -39,6 +45,7 @@ async def _get_games(season: int) -> list[Game]:
 def _build_context(season: int, games: list[Game]) -> dict:
     series_list = group_into_series(games)
     tally = tally_series(series_list)
+    paid_map = db.get_paid_map(season)
     today = date.today()
     upcoming = [s for s in series_list if s.end_date >= today and s.winner_id is None and not s.is_tied_final]
     next_series = upcoming[0] if upcoming else None
@@ -47,6 +54,7 @@ def _build_context(season: int, games: list[Game]) -> dict:
         "games": games,
         "series_list": series_list,
         "tally": tally,
+        "paid_map": paid_map,
         "next_series": next_series,
         "today": today,
         "RED_SOX_ID": RED_SOX_ID,
@@ -125,6 +133,19 @@ async def history(request: Request):
         "YANKEES_ID": YANKEES_ID,
         "TEAM_NAMES": TEAM_NAMES,
     })
+
+
+@app.post("/series/{season}/{anchor_game_pk}/paid")
+async def toggle_paid(
+    season: int,
+    anchor_game_pk: int,
+    paid: str = Form(""),
+    redirect_to: str = Form("/"),
+):
+    db.set_paid(season, anchor_game_pk, paid == "on")
+    # Only allow relative redirects back into the app.
+    target = redirect_to if redirect_to.startswith("/") else "/"
+    return RedirectResponse(target, status_code=303)
 
 
 @app.get("/healthz")

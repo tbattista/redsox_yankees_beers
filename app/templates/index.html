@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import team_chip, game_line %}
+{% from "_macros.html" import team_chip, game_line, paid_toggle %}
 {% block content %}
 
 <section class="hero">
@@ -58,7 +58,7 @@
   {% if series_list %}
   <table class="series-table">
     <thead>
-      <tr><th>#</th><th>Dates</th><th>Venue</th><th>Record</th><th>Result</th></tr>
+      <tr><th>#</th><th>Dates</th><th>Venue</th><th>Record</th><th>Result</th><th>Beer</th></tr>
     </thead>
     <tbody>
     {% for s in series_list %}
@@ -78,6 +78,7 @@
           {% else %}<span class="result pending">{{ s.status_label }}</span>
           {% endif %}
         </td>
+        <td>{{ paid_toggle(s, season, paid_map, "/") }}</td>
       </tr>
     {% endfor %}
     </tbody>
