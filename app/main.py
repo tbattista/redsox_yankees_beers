@@ -29,7 +29,7 @@ CURRENT_SEASON = 2026
 
 # Simple in-memory cache so we don't hammer statsapi on every page load.
 _cache: dict[int, tuple[float, list[Game]]] = {}
-_CACHE_TTL_SECONDS = 600  # 10 min
+_CACHE_TTL_SECONDS = 3600  # 1 hour
 
 
 async def _get_games(season: int) -> list[Game]:
