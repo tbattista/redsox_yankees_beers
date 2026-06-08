@@ -164,9 +164,10 @@ footer {
   /* Stack the "All series" table into one card per series so the columns
      don't get crushed on a phone. */
   .series-table--stack thead { display: none; }
+  .series-table--stack,
   .series-table--stack tbody,
   .series-table--stack tr,
-  .series-table--stack td { display: block; width: 100%; }
+  .series-table--stack td { display: block; width: 100%; max-width: 100%; }
   .series-table--stack tr {
     border: 1px solid var(--line); border-radius: 10px;
     background: var(--surface-2); padding: 8px 12px; margin-bottom: 10px;

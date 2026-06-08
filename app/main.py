@@ -17,6 +17,18 @@ from .series import Series, Tally, group_into_series, tally_series
 BASE_DIR = Path(__file__).parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
+
+def _static_version() -> str:
+    """Cache-busting token for static assets — the CSS file's mtime, so the
+    query string changes on every deploy and browsers re-fetch the stylesheet."""
+    try:
+        return str(int((BASE_DIR / "static" / "style.css").stat().st_mtime))
+    except OSError:
+        return "1"
+
+
+templates.env.globals["static_version"] = _static_version()
+
 app = FastAPI(title="Red Sox vs Yankees — Beer Series Tracker")
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
