@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{% block title %}Red Sox vs Yankees — Beer Tracker{% endblock %}</title>
-<link rel="stylesheet" href="/static/style.css" />
+<link rel="stylesheet" href="/static/style.css?v={{ static_version }}" />
 </head>
 <body>
 <header class="topbar">
@@ -25,7 +25,7 @@
   {% block content %}{% endblock %}
 </main>
 <footer>
-  <span>Data: MLB Stats API · cached 10 min</span>
+  <span>Data: MLB Stats API · cached hourly</span>
 </footer>
 </body>
 </html>
