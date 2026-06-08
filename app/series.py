@@ -145,6 +145,7 @@ def tally_series(series_list: list[Series]) -> Tally:
     """
     t = Tally()
     carry = 0  # six-packs rolled over from preceding ties
+    pending_carry_used = False  # the carry only rides on the *next* series to be decided
     for s in series_list:
         if s.winner_id == RED_SOX_ID:
             s.beer_stake = 1 + carry
@@ -164,8 +165,14 @@ def tally_series(series_list: list[Series]) -> Tally:
             t.splits += 1
             carry += 1
         else:
-            # Upcoming/in-progress: show what's currently at stake on it.
-            s.beer_stake = 1 + carry
+            # Upcoming/in-progress. Only the next series to be played carries the
+            # rolled-over stake; later series default to one six-pack (we don't
+            # know yet whether the next one will tie and bump them up).
+            if not pending_carry_used:
+                s.beer_stake = 1 + carry
+                pending_carry_used = True
+            else:
+                s.beer_stake = 1
             t.pending += 1
     t.carry = carry
     return t
