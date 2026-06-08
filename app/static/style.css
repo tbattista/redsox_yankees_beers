@@ -160,4 +160,31 @@ footer {
   .history-table { font-size: 13px; }
   .history-table th, .history-table td { padding: 6px 4px; }
   .history-table th { font-size: 10px; letter-spacing: 0.3px; }
+
+  /* Stack the "All series" table into one card per series so the columns
+     don't get crushed on a phone. */
+  .series-table--stack thead { display: none; }
+  .series-table--stack tbody,
+  .series-table--stack tr,
+  .series-table--stack td { display: block; width: 100%; }
+  .series-table--stack tr {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface-2); padding: 8px 12px; margin-bottom: 10px;
+  }
+  .series-table--stack td {
+    border: none; padding: 5px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .series-table--stack td::before {
+    content: attr(data-label);
+    color: var(--muted); font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.5px; flex: 0 0 auto;
+  }
+  /* The leading "#" reads as a card heading rather than a label/value row. */
+  .series-table--stack td[data-label="#"] {
+    justify-content: flex-start; gap: 6px;
+    font-weight: 700; padding-bottom: 2px;
+  }
+  .series-table--stack td[data-label="#"]::before { content: "Series"; }
+  .series-table--stack .paid-form { margin-left: auto; }
 }

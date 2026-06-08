@@ -11,6 +11,12 @@ from .mlb import Game, RED_SOX_ID, YANKEES_ID, TEAM_NAMES
 class Series:
     index: int
     games: list[Game] = field(default_factory=list)
+    # Beer accounting (populated by tally_series). A normal series is worth one
+    # six-pack; ties roll their stake forward so the next decided series is worth
+    # more. `beer_stake` is how many six-packs ride on this series.
+    beer_stake: int = 1
+    beer_winner_id: Optional[int] = None
+    rolled_over: bool = False
 
     @property
     def anchor_game_pk(self) -> int:
@@ -117,22 +123,49 @@ class Tally:
     yankees_series: int = 0
     splits: int = 0
     pending: int = 0
+    # Six-packs actually won, accounting for ties that doubled up a later series.
+    red_sox_beers: int = 0
+    yankees_beers: int = 0
+    # Six-packs riding on the next decided series because of unresolved ties.
+    carry: int = 0
 
     @property
     def beer_balance(self) -> int:
         """Positive => Yankees owe Red Sox beers; negative => Red Sox owe Yankees."""
-        return self.red_sox_series - self.yankees_series
+        return self.red_sox_beers - self.yankees_beers
 
 
 def tally_series(series_list: list[Series]) -> Tally:
+    """Tally series outcomes and beers owed.
+
+    Each series is normally worth one six-pack to its winner. A tie (split) is
+    not paid out — its stake rolls forward to the next series with a winner, so
+    the loser of that series owes double (and ties stack: two ties make the next
+    series worth triple, etc.).
+    """
     t = Tally()
+    carry = 0  # six-packs rolled over from preceding ties
     for s in series_list:
         if s.winner_id == RED_SOX_ID:
+            s.beer_stake = 1 + carry
+            s.beer_winner_id = RED_SOX_ID
             t.red_sox_series += 1
+            t.red_sox_beers += s.beer_stake
+            carry = 0
         elif s.winner_id == YANKEES_ID:
+            s.beer_stake = 1 + carry
+            s.beer_winner_id = YANKEES_ID
             t.yankees_series += 1
+            t.yankees_beers += s.beer_stake
+            carry = 0
         elif s.is_tied_final:
+            s.beer_stake = 0
+            s.rolled_over = True
             t.splits += 1
+            carry += 1
         else:
+            # Upcoming/in-progress: show what's currently at stake on it.
+            s.beer_stake = 1 + carry
             t.pending += 1
+    t.carry = carry
     return t

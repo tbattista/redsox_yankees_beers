@@ -25,9 +25,9 @@
           · {{ s.venue }}
         </div>
         <div class="series-result">
-          {% if s.winner_id == RED_SOX_ID %}<span class="result sox">Red Sox win {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }}</span>
-          {% elif s.winner_id == YANKEES_ID %}<span class="result yanks">Yankees win {{ s.wins_for(YANKEES_ID) }}–{{ s.wins_for(RED_SOX_ID) }}</span>
-          {% elif s.is_tied_final %}<span class="result">Split {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }}</span>
+          {% if s.winner_id == RED_SOX_ID %}<span class="result sox">Red Sox win {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }}{% if s.beer_stake > 1 %} · {{ s.beer_stake }} six-packs{% endif %}</span>
+          {% elif s.winner_id == YANKEES_ID %}<span class="result yanks">Yankees win {{ s.wins_for(YANKEES_ID) }}–{{ s.wins_for(RED_SOX_ID) }}{% if s.beer_stake > 1 %} · {{ s.beer_stake }} six-packs{% endif %}</span>
+          {% elif s.is_tied_final %}<span class="result">Split {{ s.wins_for(RED_SOX_ID) }}–{{ s.wins_for(YANKEES_ID) }} <span class="muted">· rolls over</span></span>
           {% else %}<span class="result pending">{{ s.status_label }}</span>
           {% endif %}
           {{ paid_toggle(s, season, paid_map, "/schedule?season=" ~ season) }}

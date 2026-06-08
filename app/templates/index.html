@@ -4,7 +4,7 @@
 
 <section class="hero">
   <h2>{{ season }} season</h2>
-  <p class="sub">Winner of each series wins a six-pack.</p>
+  <p class="sub">Winner of each series wins a six-pack. Ties roll over — next winner takes double.</p>
 </section>
 
 <section class="tally-grid">
@@ -38,6 +38,9 @@
   {% else %}
     <p>All square on beer.</p>
   {% endif %}
+  {% if tally.carry > 0 %}
+    <p class="sub">{{ tally.carry }} six-pack{{ 's' if tally.carry != 1 else '' }} riding on the next series after {{ 'a tie' if tally.carry == 1 else 'ties' }} — loser owes double.</p>
+  {% endif %}
 </section>
 
 {% if next_series %}
@@ -56,29 +59,37 @@
 <section class="panel">
   <h3>All series</h3>
   {% if series_list %}
-  <table class="series-table">
+  <table class="series-table series-table--stack">
     <thead>
       <tr><th>#</th><th>Dates</th><th>Venue</th><th>Record</th><th>Result</th><th>Beer</th></tr>
     </thead>
     <tbody>
     {% for s in series_list %}
       <tr>
-        <td>{{ s.index }}</td>
-        <td>{{ s.start_date.strftime('%b %-d') }}{% if s.end_date != s.start_date %}–{{ s.end_date.strftime('%b %-d') }}{% endif %}</td>
-        <td>{{ s.venue }}</td>
-        <td>
+        <td data-label="#">{{ s.index }}</td>
+        <td data-label="Dates" class="nowrap">{{ s.start_date.strftime('%b %-d') }}{% if s.end_date != s.start_date %}–{{ s.end_date.strftime('%b %-d') }}{% endif %}</td>
+        <td data-label="Venue">{{ s.venue }}</td>
+        <td data-label="Record" class="nowrap">
           <span class="chip sox">{{ s.wins_for(RED_SOX_ID) }}</span>
           –
           <span class="chip yanks">{{ s.wins_for(YANKEES_ID) }}</span>
         </td>
-        <td>
-          {% if s.winner_id == RED_SOX_ID %}<span class="result sox">Red Sox</span>
-          {% elif s.winner_id == YANKEES_ID %}<span class="result yanks">Yankees</span>
-          {% elif s.is_tied_final %}<span class="result">Split</span>
+        <td data-label="Result">
+          {% if s.winner_id == RED_SOX_ID %}<span class="result sox">Red Sox{% if s.beer_stake > 1 %} ×{{ s.beer_stake }}{% endif %}</span>
+          {% elif s.winner_id == YANKEES_ID %}<span class="result yanks">Yankees{% if s.beer_stake > 1 %} ×{{ s.beer_stake }}{% endif %}</span>
+          {% elif s.is_tied_final %}<span class="result">Split <span class="muted">· rolls over</span></span>
           {% else %}<span class="result pending">{{ s.status_label }}</span>
           {% endif %}
         </td>
-        <td>{{ paid_toggle(s, season, paid_map, "/") }}</td>
+        <td data-label="Beer">
+          {% if s.winner_id %}
+            {{ paid_toggle(s, season, paid_map, "/") }}
+          {% elif s.is_tied_final %}
+            <span class="muted">—</span>
+          {% else %}
+            <span class="muted nowrap">{{ s.beer_stake }} six-pack{{ 's' if s.beer_stake != 1 else '' }}</span>
+          {% endif %}
+        </td>
       </tr>
     {% endfor %}
     </tbody>
