@@ -10,7 +10,7 @@ Tiny FastAPI site that tracks Red Sox / Yankees head-to-head series so two frien
 - Tallies series wins, splits, and a net beer balance.
 - Renders three views: **Dashboard** (tally + next series), **Schedule** (list by series), **Calendar** (month grid).
 - **History** page replays the same logic across past seasons so you can see what the bet would've paid out.
-- Every settled series has a **Paid / Unpaid** toggle so you can track whether the six-pack has actually been handed over. State is stored in a local SQLite file (`$DATA_DIR/app.db`, default `./data/app.db`).
+- Every settled series has a **Paid / Unpaid** toggle so you can track whether the six-pack has actually been handed over. State is stored server-side in a simple JSON file (`$DATA_DIR/payments.json`, default `./data/payments.json`), organized by season so you can revisit who paid in past years. (Any prior SQLite data is migrated over automatically on first run.)
 
 ## Running locally
 
@@ -28,10 +28,10 @@ Then open http://127.0.0.1:8000/.
 2. Create a new Railway project from the repo.
 3. Railway auto-detects Python via `nixpacks` and uses the start command in `railway.json` / `Procfile`:
    `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-4. Add a Railway **Volume** mounted at `/data` and set the env var `DATA_DIR=/data` so the paid-toggle SQLite DB survives redeploys. Without a volume the DB resets on every deploy.
+4. Add a Railway **Volume** mounted at `/data` and set the env var `DATA_DIR=/data` so `payments.json` survives redeploys. **Without a volume the file resets on every deploy**, so the paid/unpaid history would be lost.
 
 ## Notes
 
-- MLB responses are cached in-process for 10 minutes to avoid hammering the API.
+- MLB responses are cached in-process for 1 hour to avoid hammering the API.
 - `gameType=R,F,D,L,W` pulls regular season plus any postseason matchups.
 - Series winner rule: whichever team wins more of the scheduled games in that series. A 1–1 in a 2-game set counts as a split (no beer owed).
